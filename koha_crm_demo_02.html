@@ -645,6 +645,7 @@
                     const safeAuthors = escapeHtml(book.authors || "未提供作者");
                     const safeIsbn = escapeHtml(book.isbn || "無 ISBN");
                     const summary = escapeHtml(book.summary || "目前無資料");
+                    const rewrite_query = escapeHtml(book.rewrite_query || "目前無資料");
                     const bookUrl = "https://crm.koha.com.tw/cgi-bin/koha/opac-detail.pl?biblionumber=" + encodeURIComponent(book.id);
 
                     const cardHtml = `
@@ -655,7 +656,10 @@
                                 <p class="book-isbn">🔑ISBN：${safeIsbn}</p>
                             </div>
                             <div class="book-reason">
-                                ${summary}
+                                <div>摘要</div>
+                                <p>${summary}</p>
+                                <div>改寫後的query</div>
+                                <p>${rewrite_query}</p>
                             </div>
                             <div class="book-footer">
                                 <span class="book-score">相關度: ${scorePercent}</span>
