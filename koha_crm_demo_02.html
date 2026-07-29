@@ -532,11 +532,12 @@
                 $exampleTagsGrid.empty(); // 先清空目前的標籤容器
 
                 // 遍歷所有範例陣列並逐一產生標籤
+                var temp = 0;
                 $.each(ALL_EXAMPLES, function (index, text) {
                     const $tag = $('<div></div>')
                         .addClass('example-tag')
                         .attr('data-text', text)
-                        .text(text);
+                        .text( (++temp) + " " + text);
                     $exampleTagsGrid.append($tag);
                 });
             }
@@ -545,7 +546,7 @@
             //renderRandomExamples();
             renderAllExamples();
 
-            
+
             // 點擊「換一組」按鈕切換
             $btnRefreshExamples.on('click', function () {
                 renderRandomExamples();
