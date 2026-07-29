@@ -594,7 +594,7 @@
                     success: function (response) {
                         setLoadingState(false);
                         if (response && response.results && response.results.length > 0) {
-                            renderResults(response.results);
+                            renderResults(response.results, response.rewrite_query);
                         } else {
                             showError("查無符合相關的圖書，建議更換情境描述後再試。");
                         }
@@ -632,8 +632,10 @@
                 $errorMessage.text(message).fadeIn(200);
             }
 
-            function renderResults(books) {
+            function renderResults(books, rewriteQuery) {
                 $resultsGrid.empty();
+
+                const safeRewriteQuery = escapeHtml(rewriteQuery || "目前無資料");
 
                 $.each(books, function (index, book) {
                     let scorePercent = "未知";
@@ -645,7 +647,6 @@
                     const safeAuthors = escapeHtml(book.authors || "未提供作者");
                     const safeIsbn = escapeHtml(book.isbn || "無 ISBN");
                     const summary = escapeHtml(book.summary || "目前無資料");
-                    const rewrite_query = escapeHtml(book.rewrite_query || "目前無資料");
                     const bookUrl = "https://crm.koha.com.tw/cgi-bin/koha/opac-detail.pl?biblionumber=" + encodeURIComponent(book.id);
 
                     const cardHtml = `
@@ -659,7 +660,7 @@
                                 <div>摘要</div>
                                 <p>${summary}</p>
                                 <div>改寫後的query</div>
-                                <p>${rewrite_query}</p>
+                                <p>${safeRewriteQuery}</p>
                             </div>
                             <div class="book-footer">
                                 <span class="book-score">相關度: ${scorePercent}</span>
