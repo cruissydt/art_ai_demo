@@ -54,6 +54,19 @@
             margin-bottom: 12px;
         }
 
+        .page_find_book .note-container {
+            padding: 0 4px;
+            margin-top: -4px;
+            margin-bottom: 20px;
+        }
+
+        .page_find_book .note-container p {
+            color: #333;
+            font-size: 13px;
+            margin: 3px 0;
+            line-height: 1.4;
+        }
+
         .page_find_book .search-textarea {
             width: 100%;
             height: 150px;
@@ -360,6 +373,11 @@
                 <div class="char-counter" id="charCounter">0/50</div>
             </div>
 
+            <div class="note-container">
+                <p>⚠️ 保護隱私：請勿輸入個人個資、機密、政治或敏感違規內容。</p>
+                <p>⚠️ 容錯提醒：AI 語意理解偶有偏誤，書單資訊請以實際內容為準。</p>
+            </div>
+
             <div class="example-container">
                 <div class="example-header">
                     <span class="example-title">💡 試試看點擊以下的情境範例：</span>
@@ -538,7 +556,7 @@
                     const $tag = $('<div></div>')
                         .addClass('example-tag')
                         .attr('data-text', text)
-                        .text( (++temp) + " " + text);
+                        .text((++temp) + " " + text);
                     $exampleTagsGrid.append($tag);
                 });
             }
