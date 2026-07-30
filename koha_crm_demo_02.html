@@ -317,14 +317,88 @@
             border-top: 1px dashed #edf2f7;
         }
 
-        .page_find_book .book-score {
+        /* === 評價回饋區塊 CSS === */
+        .page_find_book .book-feedback {
+            font-size: 13px;
+            color: #4a5568;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .page_find_book .btn-feedback {
+            background: none;
+            border: 1px solid #e2e8f0;
+            background-color: #f7fafc;
+            color: #718096;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .page_find_book .btn-feedback:hover {
+            background-color: #edf2f7;
+            border-color: #cbd5e0;
+            transform: scale(1.05);
+        }
+
+        .page_find_book .btn-feedback.active-like {
+            background-color: #ebf8ff;
+            border-color: #3182ce;
+            color: #3182ce;
+        }
+
+        .page_find_book .btn-feedback.active-dislike {
+            background-color: #fff5f5;
+            border-color: #e53e3e;
+            color: #e53e3e;
+        }
+
+        .page_find_book .feedback-reasons {
             display: none;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #edf2f7;
+            width: 100%;
+        }
+
+        .page_find_book .reasons-title {
             font-size: 12px;
             color: #718096;
-            background-color: #ebf8ff;
-            color: #2b6cb0;
+            margin: 0;
+        }
+
+        .page_find_book .reasons-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .page_find_book .btn-reason {
+            background-color: #edf2f7;
+            border: 1px solid #e2e8f0;
+            color: #4a5568;
             padding: 3px 8px;
             border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .page_find_book .btn-reason:hover {
+            background-color: #e2e8f0;
+        }
+
+        .page_find_book .feedback-thank {
+            font-size: 13px;
+            color: #3182ce;
             font-weight: 600;
         }
 
@@ -638,6 +712,47 @@
                 });
             });
 
+            // ========================================================
+            // 回饋按鈕互動邏輯（使用事件委派處理動態產生的卡片）
+            // ========================================================
+
+            // 1. 點擊「讚 (Like)」
+            $resultsGrid.on('click', '.btn-like', function () {
+                const $card = $(this).closest('.book-card');
+                const bookId = $card.attr('data-book-id');
+
+                // [可選] 在此處發送 Ajax 到後端記錄讚 (例如: { bookId: bookId, type: 'like' })
+
+                // 將 feedback 區域改為「謝謝您的回饋」
+                $card.find('.book-feedback').html('<span class="feedback-thank">🙏 謝謝您的回饋</span>');
+            });
+
+            // 2. 點擊「倒讚 (Dislike)」
+            $resultsGrid.on('click', '.btn-dislike', function () {
+                const $card = $(this).closest('.book-card');
+
+                // 改變按鈕為選中樣式
+                $(this).addClass('active-dislike');
+                $card.find('.btn-like').prop('disabled', true).css('opacity', '0.5');
+
+                // 展開選單原因
+                $card.find('.feedback-reasons').slideDown(150);
+            });
+
+            // 3. 點擊「不讚的原因」單選
+            $resultsGrid.on('click', '.btn-reason', function () {
+                const $card = $(this).closest('.book-card');
+                const bookId = $card.attr('data-book-id');
+                const reasonText = $(this).text();
+
+                // [可選] 在此處發送 Ajax 到後端記錄倒讚原因 (例如: { bookId: bookId, type: 'dislike', reason: reasonText })
+
+                // 將整個 feedback 區域改為「謝謝您的回饋」
+                $card.find('.book-feedback').html('<span class="feedback-thank">🙏 謝謝您的回饋</span>');
+            });
+
+
+
             function setLoadingState(isLoading) {
                 if (isLoading) {
                     $btnSubmit.prop('disabled', true).text('找書中...');
@@ -671,7 +786,7 @@
                     const bookUrl = "https://crm.koha.com.tw/cgi-bin/koha/opac-detail.pl?biblionumber=" + encodeURIComponent(book.id);
 
                     const cardHtml = `
-                        <div class="book-card">
+                        <div class="book-card" data-book-id="${book.id}">
                             <div class="book-meta">
                                 <h4 class="book-title" title="${safeTitle}">${safeTitle}</h4>
                                 <p class="book-authors">👤作者：${safeAuthors}</p>
@@ -681,8 +796,20 @@
                                 <p>${summary}</p>
                             </div>
                             <div class="book-footer">
-                                <span class="book-score">相關度: ${scorePercent}</span>
+                                <div class="book-feedback">
+                                    <span>有幫助嗎？</span>
+                                    <button type="button" class="btn-feedback btn-like" title="推薦/有幫助">👍</button>
+                                    <button type="button" class="btn-feedback btn-dislike" title="不符預期">👎</button>
+                                </div>
                                 <a href="${bookUrl}" class="book-link" rel="noopener noreferrer">檢視詳細館藏 ➔</a>
+                            </div>
+                            <div class="feedback-reasons">
+                                <p class="reasons-title">請選擇原因：</p>
+                                <div class="reasons-group">
+                                    <button type="button" class="btn-reason">不符合情境</button>
+                                    <button type="button" class="btn-reason">與書單資訊不符</button>
+                                    <button type="button" class="btn-reason">用錯語言</button>
+                                </div>
                             </div>
                         </div>
                     `;
