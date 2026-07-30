@@ -267,12 +267,6 @@
             justify-content: space-between;
         }
 
-        .page_find_book .book-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            border-color: #cbd5e0;
-        }
-
         .page_find_book .book-meta {
             margin-bottom: 12px;
         }
@@ -749,6 +743,8 @@
 
                 // 將整個 feedback 區域改為「謝謝您的回饋」
                 $card.find('.book-feedback').html('<span class="feedback-thank">🙏 謝謝您的回饋</span>');
+
+                $card.find('.feedback-reasons').slideUp(150);
             });
 
 
