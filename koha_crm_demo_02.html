@@ -376,6 +376,7 @@
             <div class="note-container">
                 <p>⚠️ 保護隱私：請勿輸入個人個資、機密、政治或敏感違規內容。</p>
                 <p>⚠️ 容錯提醒：AI 語意理解偶有偏誤，書單資訊請以實際內容為準。</p>
+                <p class="safeRewriteQuery"></p>
             </div>
 
             <div class="example-container">
@@ -655,6 +656,7 @@
                 $resultsGrid.empty();
 
                 const safeRewriteQuery = escapeHtml(rewriteQuery || "目前無資料");
+                $(".safeRewriteQuery").text(safeRewriteQuery);
 
                 $.each(books, function (index, book) {
                     let scorePercent = "未知";
@@ -676,10 +678,7 @@
                                 <p class="book-isbn">🔑ISBN：${safeIsbn}</p>
                             </div>
                             <div class="book-reason">
-                                <div>摘要</div>
                                 <p>${summary}</p>
-                                <div>改寫後的query</div>
-                                <p>${safeRewriteQuery}</p>
                             </div>
                             <div class="book-footer">
                                 <span class="book-score">相關度: ${scorePercent}</span>
