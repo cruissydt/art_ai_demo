@@ -450,7 +450,7 @@
             <div class="example-container">
                 <div class="example-header">
                     <span class="example-title">💡 試試看點擊以下的情境範例：</span>
-                    <button type="button" class="btn-refresh-examples" id="btnRefreshExamples">🔄換一組</button>
+                    <button type="button" class="btn-refresh-examples" id="btnRefreshExamples">🔄換一組2</button>
                 </div>
                 <div class="example-tags" id="exampleTagsGrid">
                 </div>
@@ -844,18 +844,25 @@
             $.ajax({
                 url: "https://script.google.com/macros/s/AKfycbyLVFFDnK38X_N_urOVz91YIawgSsIfPTj__yDYTITb9AaVcTd0_DbVC8yK9Qd8DFwq/exec",
                 type: "POST",
-                dataType: "json",
-                // GAS 對 Content-Type為 "application/json" 的跨域處理可能有預檢(Preflight)問題，
-                // 建議傳送為字串資料，GAS 端使用 JSON.parse(e.postData.contents) 可正常讀取：
+                // 關鍵修改 1: 將 contentType 設為 text/plain，避免瀏覽器發送 OPTIONS 預檢請求而發生 CORS 報錯
+                contentType: "text/plain;charset=utf-8",
+                // 關鍵修改 2: 傳送 JSON 字串，GAS 後端用 e.postData.contents 一樣能正常解析
                 data: JSON.stringify({
                     bookId: bookId,
                     actionType: actionType
                 }),
                 success: function (res) {
-                    console.log("回饋傳送成功:", res);
+                    // 因 GAS Web App 轉址機制，有時候回傳結果會以字串形式進入
+                    let data = res;
+                    if (typeof res === "string") {
+                        try {
+                            data = JSON.parse(res);
+                        } catch (e) { }
+                    }
+                    console.log("回饋傳送成功:", data);
                 },
-                error: function (err) {
-                    console.error("回饋傳送失敗:", err);
+                error: function (xhr, status, error) {
+                    console.error("回饋傳送失敗:", error);
                 }
             });
         }
