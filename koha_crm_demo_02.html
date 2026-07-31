@@ -475,6 +475,7 @@
 
     <script>
         /* AI找書 開始 */
+
         $(document).ready(function () {
             const API_ENDPOINT = "https://artapi.zeabur.app/koha_crm_2/api/search";
 
@@ -715,7 +716,8 @@
                 const $card = $(this).closest('.book-card');
                 const bookId = $card.attr('data-book-id');
 
-                // [可選] 在此處發送 Ajax 到後端記錄讚 (例如: { bookId: bookId, type: 'like' })
+                // 傳送到 GAS 試算表 - 按讚欄位
+                sendFeedbackToSheet(bookId, "按讚");
 
                 // 將 feedback 區域改為「謝謝您的回饋」
                 $card.find('.book-feedback').html('<span class="feedback-thank">🙏 謝謝您的回饋</span>');
@@ -739,7 +741,16 @@
                 const bookId = $card.attr('data-book-id');
                 const reasonText = $(this).text();
 
-                // [可選] 在此處發送 Ajax 到後端記錄倒讚原因 (例如: { bookId: bookId, type: 'dislike', reason: reasonText })
+                // 傳送到 GAS 試算表 - 對應的倒讚原因欄位
+                let actionType = "";
+                if (reasonText === "不符合情境") {
+                    actionType = "按倒讚 - 不符合情境";
+                } else if (reasonText === "與書單資訊不符") {
+                    actionType = "按倒讚 - 與書單資訊不符";
+                } else if (reasonText === "用錯語言") {
+                    actionType = "按倒讚 - 用錯語言";
+                }
+                sendFeedbackToSheet(bookId, actionType);
 
                 // 將整個 feedback 區域改為「謝謝您的回饋」
                 $card.find('.book-feedback').html('<span class="feedback-thank">🙏 謝謝您的回饋</span>');
@@ -828,6 +839,26 @@
                 });
             }
         });
+
+        function sendFeedbackToSheet(bookId, actionType) {
+            $.ajax({
+                url: "https://script.google.com/macros/s/AKfycbyLVFFDnK38X_N_urOVz91YIawgSsIfPTj__yDYTITb9AaVcTd0_DbVC8yK9Qd8DFwq/exec",
+                type: "POST",
+                dataType: "json",
+                // GAS 對 Content-Type為 "application/json" 的跨域處理可能有預檢(Preflight)問題，
+                // 建議傳送為字串資料，GAS 端使用 JSON.parse(e.postData.contents) 可正常讀取：
+                data: JSON.stringify({
+                    bookId: bookId,
+                    actionType: actionType
+                }),
+                success: function (res) {
+                    console.log("回饋傳送成功:", res);
+                },
+                error: function (err) {
+                    console.error("回饋傳送失敗:", err);
+                }
+            });
+        }
         /* AI找書 結束 */
     </script>
 </body>
