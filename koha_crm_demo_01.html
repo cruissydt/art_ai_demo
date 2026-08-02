@@ -595,7 +595,7 @@
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({ query: queryText }),
-                    timeout: 25000,
+                    timeout: 50000,
                     success: function (response) {
                         setLoadingState(false);
                         if (response && response.results && response.results.length > 0) {
@@ -614,7 +614,11 @@
                             displayError = "搜尋字串過長，請縮短後再試。";
                         } else if (xhr.responseJSON && xhr.responseJSON.message) {
                             displayError = "錯誤: " + xhr.responseJSON.message;
-                        } else if (xhr.status !== 0) {
+                        } else if (status === 'timeout') {
+                            displayError = "搜尋花費時間較長，請稍後再試一次。";
+                        } else if (xhr.status === 0) {
+                            displayError = "無法連線到伺服器，請確認網路連線後再試。";
+                        } else {
                             displayError = "錯誤: HTTP " + xhr.status + " " + error;
                         }
 
