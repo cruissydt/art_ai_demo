@@ -444,6 +444,7 @@
             <div class="note-container">
                 <p>⚠️ 保護隱私：請勿輸入個人個資、機密、政治或敏感違規內容。</p>
                 <p>⚠️ 容錯提醒：AI 語意理解偶有偏誤，書單資訊請以實際內容為準。</p>
+                <p class="test_view"></p>
             </div>
 
             <div class="example-container">
@@ -684,8 +685,11 @@
                         if (response && response.results && response.results.length > 0) {
                             //renderResults(response.results, response.rewrite_query);
                             renderResults(response.results, response.query);
-                            console.log("ising_rewrite:" + response.ising_rewrite);
-                            console.log("ising_llm_msg:" + response.ising_llm_msg);
+                            //
+                            var test_view = '';
+                            test_view += "ising_rewrite:" + response.ising_rewrite;
+                            test_view += "ising_llm_msg:" + response.ising_llm_msg;
+                            $(".test_view").html(test_view);
                         } else {
                             showError("查無符合相關的圖書，建議更換情境描述後再試。");
                         }
