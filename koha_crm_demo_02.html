@@ -687,8 +687,8 @@
                             renderResults(response.results, response.query);
                             //
                             var test_view = '';
-                            test_view += "ising_rewrite:" + response.ising_rewrite;
-                            test_view += "ising_llm_msg:" + response.ising_llm_msg;
+                            test_view += "ising_rewrite:" + response.ising_rewrite + "<br>";
+                            test_view += "ising_llm_msg:" + response.ising_llm_msg + "<br>";
                             $(".test_view").html(test_view);
                         } else {
                             showError("查無符合相關的圖書，建議更換情境描述後再試。");
