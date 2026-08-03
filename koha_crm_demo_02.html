@@ -678,7 +678,7 @@
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({ query: queryText }),
-                    timeout: 25000,
+                    timeout: 50000,
                     success: function (response) {
                         setLoadingState(false);
                         if (response && response.results && response.results.length > 0) {
