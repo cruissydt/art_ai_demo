@@ -444,7 +444,6 @@
             <div class="note-container">
                 <p>⚠️ 保護隱私：請勿輸入個人個資、機密、政治或敏感違規內容。</p>
                 <p>⚠️ 容錯提醒：AI 語意理解偶有偏誤，書單資訊請以實際內容為準。</p>
-                <p class="safeRewriteQuery"></p>
             </div>
 
             <div class="example-container">
@@ -775,11 +774,10 @@
                 $errorMessage.text(message).fadeIn(200);
             }
 
-            function renderResults(books, rewriteQuery) {
+            function renderResults(books, arg_query) {
                 $resultsGrid.empty();
 
-                const safeRewriteQuery = escapeHtml(rewriteQuery || "目前無資料");
-                $(".safeRewriteQuery").text(safeRewriteQuery);
+                console.log(arg_query);
 
                 $.each(books, function (index, book) {
                     let scorePercent = "未知";
